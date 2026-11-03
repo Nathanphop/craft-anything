@@ -177,7 +177,7 @@ Build	สร้าง
 Build a rebuild ledger	สร้างบันทึกการสร้างใหม่
 Build a stand-in backend	สร้างแบ็กเอนด์แบบสแตนด์อโลน
 Build with	สร้างด้วย
-Build with this	สร้างด้วยสิ่งนี้
+Build with this	ใช้ตัวนี้สร้าง
 Build with {name}	สร้างด้วย {name}
 Build with {name} instead	สร้างด้วย {name} แทน
 Build without it	สร้างโดยไม่มีมัน
@@ -393,8 +393,8 @@ Export evidence	หลักฐานการส่งออก
 Export report	รายงานการส่งออก
 Extract an archive	แยกไฟล์เก็บถาวร
 Extract firmware	แยกเฟิร์มแวร์
-Extract with this	แยกด้วยสิ่งนี้
-Extracts	สารสกัด
+Extract with this	ใช้ตัวนี้แยกข้อมูล
+Extracts	แยกข้อมูล
 File formats	รูปแบบไฟล์
 Files packed inside a file	ไฟล์บรรจุอยู่ภายในไฟล์
 Filter	ตัวกรอง
@@ -439,7 +439,7 @@ Function references	การอ้างอิงฟังก์ชัน
 Functions	ฟังก์ชั่น
 GDB command	คำสั่ง GDB
 GDB session status	สถานะเซสชัน GDB
-Game assets	เนื้อหาของเกม
+Game assets	แอสเซ็ตเกม
 Game engines	เอนจินเกม
 Game files	ไฟล์เกม
 General	ทั่วไป
@@ -680,7 +680,7 @@ Needs you	ต้องการคุณ
 Network	เครือข่าย
 New	ใหม่
 New project	โปรเจกต์ใหม่
-New projects go in	มีโปรเจกต์ใหม่เข้ามา
+New projects go in	บันทึกโปรเจกต์ใหม่ไว้ที่
 Next address	ที่อยู่ถัดไป
 No AI (built-in engines only)	ไม่มี AI (เอนจินในตัวเท่านั้น)
 No AI brain is set up, so answers come straight from the built-in engines. Add one any time for plain-words explanations.	ไม่มีการตั้งค่าสมอง AI ดังนั้นคำตอบจึงมาจากเอนจินในตัวโดยตรง เพิ่มคำอธิบายที่เป็นคำธรรมดาได้ตลอดเวลา
@@ -1114,8 +1114,8 @@ Try again	ลองอีกครั้ง
 Try asking	ลองถาม
 Try it out, then ask below for any changes.	ลองเลย แล้วถามด้านล่างหากมีการเปลี่ยนแปลงใดๆ
 Turn a program's machine code back into something that reads like source code. It's a reconstruction, not the original.	เปลี่ยนรหัสเครื่องของโปรแกรมกลับเป็นสิ่งที่อ่านได้เหมือนซอร์สโค้ด มันเป็นการสร้างขึ้นใหม่ ไม่ใช่ของเดิม
-Turn off	ปิดเครื่อง
-Turn off an AI	ปิด AI
+Turn off	ปิดใช้งาน
+Turn off an AI	ปิดใช้งาน AI
 Turn on	เปิดเครื่อง
 Turn on Deep mode	เปิด Deep mode
 Turn on an AI	เปิด AI
@@ -1248,7 +1248,7 @@ You can add a Claude, ChatGPT or OpenRouter key, a local model (Ollama, LM Studi
 You chose:	คุณเลือก:
 You're all set	คุณพร้อมแล้ว
 Your app is ready	แอปของคุณพร้อมแล้ว
-Your brains	สมองของคุณ
+Your brains	AI ของคุณ
 Your fal.ai key	รหัส f.ai ของคุณ
 Your game is ready	เกมของคุณพร้อมแล้ว
 Your message wasn't sent: another project was opened while its pictures were copied.	ไม่ได้ส่งข้อความของคุณ มีการเปิดโปรเจกต์อื่นในขณะที่คัดลอกรูปภาพ
