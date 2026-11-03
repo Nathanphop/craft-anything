@@ -144,7 +144,7 @@ only when it's green and a maintainer has fully reviewed it, code as well as wor
 - [ ] Merge order the PR list doesn't show: #413 before #455; #193 before #482 and #486 (all change
       the language list); #491 before #492 (same file). #433 and #468 look redundant with #421 and
       #500: ask their authors
-- [ ] Add a Thai desktop UI catalog, locale selection and coverage tests — claimed: Codex, branch
+- [x] Add a Thai desktop UI catalog, locale selection and coverage tests — claimed: Codex, branch
       feature/r5.2-thai-ui
 - [ ] **decision** Wide PRs with no roadmap line: #416 (project goals, 34 files, cites an R2.11 that
       doesn't exist; that id stays free for it) and #503 (two asset providers and spending controls,

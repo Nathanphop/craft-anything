@@ -22,6 +22,7 @@ pub static LANGUAGES: &[LangInfo] = &[
     LangInfo { code: "en", name: "English", source: "" },
     LangInfo { code: "fr", name: "Français", source: include_str!("fr.tsv") },
     LangInfo { code: "ja", name: "日本語", source: include_str!("ja.tsv") },
+    LangInfo { code: "th", name: "ไทย", source: include_str!("i18n/th.tsv") },
     LangInfo { code: "zh-hans", name: "简体中文", source: include_str!("i18n/zh-hans.tsv") },
     LangInfo { code: "zh-hant", name: "繁體中文", source: include_str!("i18n/zh-hant.tsv") },
 ];
@@ -127,7 +128,7 @@ mod tests {
     }
 
     #[test]
-    fn chinese_scripts_regions_and_fallback() {
+    fn locale_variants_and_fallback() {
         for tag in ["zh", "zh-CN", "zh_SG.UTF-8", "ZH-Hans", "zh-Hans-TW"] {
             assert_eq!(language_from_tag(tag), Some("zh-hans"), "{tag}");
         }
@@ -137,6 +138,7 @@ mod tests {
         assert_eq!(language_from_tag("en-US"), Some("en"));
         assert_eq!(language_from_tag("ja-JP"), Some("ja"));
         assert_eq!(language_from_tag("fr-CA"), Some("fr"));
+        assert_eq!(language_from_tag("th-TH"), Some("th"));
         assert_eq!(language_from_tag("de-DE"), None);
         assert_eq!(preferred_language(["de-DE", "zh-HK", "en-US"]), "zh-hant");
         assert_eq!(preferred_language(["en-US", "zh-CN"]), "en");
@@ -145,14 +147,14 @@ mod tests {
     }
 
     #[test]
-    fn chinese_catalogs_are_valid_and_have_matching_keys() {
+    fn complete_catalogs_are_valid_and_have_matching_keys() {
         fn placeholders(s: &str) -> Vec<&str> {
             let mut out: Vec<_> = s.split('{').skip(1).filter_map(|s| s.split_once('}').map(|(p, _)| p)).collect();
             out.sort_unstable();
             out
         }
         let mut catalogs = Vec::new();
-        for lang in LANGUAGES.iter().filter(|l| matches!(l.code, "zh-hans" | "zh-hant")) {
+        for lang in LANGUAGES.iter().filter(|l| matches!(l.code, "th" | "zh-hans" | "zh-hant")) {
             let mut keys = std::collections::BTreeSet::new();
             for (i, line) in lang.source.lines().enumerate() {
                 if line.trim().is_empty() || line.starts_with('#') {
@@ -168,10 +170,12 @@ mod tests {
             let parsed = parse(lang.source);
             assert_eq!(parsed.len(), keys.len());
             assert!(keys.len() > 500, "{}: incomplete catalog", lang.code);
-            catalogs.push(keys);
+            catalogs.push((lang.code, keys));
         }
-        assert_eq!(catalogs.len(), 2);
-        assert_eq!(catalogs.first(), catalogs.last());
+        assert_eq!(catalogs.len(), 3);
+        for pair in catalogs.windows(2) {
+            assert_eq!(&pair[0].1, &pair[1].1, "{} and {} catalog keys differ", pair[0].0, pair[1].0);
+        }
     }
 
     /// Every translation keeps its key's `{placeholders}`, or `trf` would leave them unfilled.

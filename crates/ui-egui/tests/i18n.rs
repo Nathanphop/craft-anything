@@ -33,7 +33,7 @@ fn harness(mut settings: Settings, dir: &Path) -> Harness<'static, CraftApp> {
 }
 
 #[test]
-fn chinese_startup_language_menu_and_saved_selection() {
+fn localized_startup_language_menu_and_saved_selection() {
     let temp = tempfile::tempdir().unwrap();
     for (initial, native, other, other_native, translated_language, translated_open) in [
         ("zh-hans", "简体中文", "zh-hant", "繁體中文", "语言", "已打开 sample.exe"),
@@ -122,13 +122,23 @@ fn chinese_startup_language_menu_and_saved_selection() {
         assert_eq!(i18n::language(), expected);
         assert!(restored.state().engine.session().settings.language.is_empty());
     }
-    for (code, native, label) in [("fr", "Français", "Langue"), ("ja", "日本語", "言語")] {
+    for (code, native, label) in [("fr", "Français", "Langue"), ("ja", "日本語", "言語"), ("th", "ไทย", "ภาษา")] {
         let settings = Settings { mode: Mode::Beginner, first_run_done: true, language: code.into(), ..Default::default() };
         let mut existing = harness(settings, &temp.path().join(code));
         existing.run_steps(3);
         assert_eq!(i18n::language(), code);
         existing.get_by_label(label);
         existing.get_by_value(native);
+    }
+    i18n::set_language("th-TH");
+    assert_eq!(i18n::language(), "th");
+    assert_eq!(i18n::trf("Opened {name}", &[("name", "sample.exe")]), "เปิด sample.exe");
+    assert_eq!(craft_anything_ui_egui::usage::asset_cost_words(0.0031), "ต่ำกว่า $0.01");
+    let kinds = craft_anything_ai::rebuild::KindRegistry::built_in();
+    for (request, expected) in [("เว็บไซต์สำหรับร้านเบเกอรี่ของฉัน", "website"), ("เกมงูง่ายๆ", "game")]
+    {
+        let (kind, _) = kinds.choose(request, &craft_anything_engine::workspace::TargetRef::None, false).unwrap();
+        assert_eq!(kind.id(), expected, "{request}");
     }
     i18n::set_language("unsupported-locale");
     assert_eq!(i18n::language(), "en");

@@ -144,7 +144,21 @@ impl TargetKind for WebsiteKind {
     fn detect(&self, cx: &DetectCx) -> Option<u32> {
         if matches!(cx.target, TargetRef::Website { .. }) {
             Some(100)
-        } else if cx.says(&[" website", " web page", " webpage", " landing page", " site ", "网站", "網站", "网页", "網頁"]) {
+        } else if cx.says(&[
+            " website",
+            " web page",
+            " webpage",
+            " landing page",
+            " site ",
+            "เว็บไซต์",
+            "เว็บเพจ",
+            "หน้าเว็บ",
+            "แลนดิ้งเพจ",
+            "网站",
+            "網站",
+            "网页",
+            "網頁",
+        ]) {
             Some(50)
         } else {
             None
