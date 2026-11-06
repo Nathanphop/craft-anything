@@ -161,7 +161,6 @@ Asking for its models…	สอบถามรุ่น…
 Asset catalog	แค็ตตาล็อกสินทรัพย์
 At most this many rounds of fixes after the first build.	การแก้ไขหลายครั้งมากขนาดนี้หลังจากบิวด์แรก
 Attach pictures	แนบรูปภาพ
-Attach pictures (or drop them here)	แนบรูปภาพ (หรือวางไว้ที่นี่)
 Auto mode	โหมดอัตโนมัติ
 Automatic	อัตโนมัติ
 Automatic ({name})	อัตโนมัติ ({name})
@@ -708,7 +707,6 @@ Not now	ไม่ใช่ตอนนี้
 Nothing allowed yet.	ยังไม่อนุญาต
 Nothing can build yet: install Claude Code (and sign in to it once), or add an AI with an API key below.	ยังสร้างอะไรไม่ได้เลย: ติดตั้ง Claude Code (และลงชื่อเข้าใช้ครั้งเดียว) หรือเพิ่ม AI ด้วยคีย์ API ด้านล่าง
 Nothing found	ไม่พบสิ่งใดเลย
-Nothing found yet. We look for API keys, local model servers (Ollama, LM Studio) and agent apps you already have.	ยังไม่พบสิ่งใดเลย เรามองหาคีย์ API เซิร์ฟเวอร์โมเดลภายในเครื่อง (Ollama, LM Studio) และแอปเอเจนต์ที่คุณมีอยู่แล้ว
 Nothing inside it is read.	ข้างในไม่มีอะไรอ่านเลย
 Nothing inside it is read; Craft Anything works from what you can see. Your version gets its own art.	ไม่มีสิ่งใดข้างในอ่านเลย Craft Anything ทำงานจากสิ่งที่คุณเห็น เวอร์ชันของคุณมีงานศิลปะเป็นของตัวเอง
 Nothing inside the original is read: not its code, files or page source. Craft Anything works from what you can see: pictures, the page as a visitor sees it, and watching it run.	ไม่มีการอ่านสิ่งใดในต้นฉบับ: ไม่ใช่โค้ด ไฟล์ หรือแหล่งที่มาของหน้า Craft Anything ทำงานจากสิ่งที่คุณเห็น: รูปภาพ เพจที่ผู้เยี่ยมชมเห็น และการดูมันทำงาน
@@ -1366,3 +1364,65 @@ your files there are the app, edited in place	ไฟล์ของคุณม�
 … {} older	… {} เก่ากว่า
 ← Back	← ย้อนกลับ
 ↑↓ to move · Enter to run · Esc to close	↑↓ เพื่อเลื่อน · Enter เพื่อเรียกใช้ · Esc เพื่อปิด
+OpenCode default	ค่าเริ่มต้นของ OpenCode
+Model default	ค่าเริ่มต้นของโมเดล
+Thinking depth	ระดับการคิด
+OpenCode model	โมเดล OpenCode
+Remote program	โปรแกรมระยะไกล
+Reload models	โหลดโมเดลใหม่
+Apply	นำไปใช้
+No chat models are visible in {agent}. Check its setup, then reload.	ไม่พบโมเดลแชตที่มองเห็นได้ใน {agent} ตรวจสอบการตั้งค่าแล้วโหลดใหม่
+The saved model is no longer visible. Choose another model or the {agent} default.	โมเดลที่บันทึกไว้ไม่ปรากฏแล้ว เลือกโมเดลอื่นหรือค่าเริ่มต้นของ {agent}
+OpenCode has no visible chat models. Connect a provider in OpenCode, then reload.	OpenCode ไม่มีโมเดลแชตที่มองเห็นได้ เชื่อมต่อผู้ให้บริการใน OpenCode แล้วโหลดใหม่
+The saved model is no longer visible. Choose another model or the OpenCode default.	โมเดลที่บันทึกไว้ไม่ปรากฏแล้ว เลือกโมเดลอื่นหรือค่าเริ่มต้นของ OpenCode
+The saved thinking depth is unavailable for this model. Choose its default or an offered depth.	ระดับการคิดที่บันทึกไว้ใช้กับโมเดลนี้ไม่ได้ เลือกค่าเริ่มต้นหรือระดับที่มีให้
+List an agent's models	แสดงรายการโมเดลของเอเจนต์
+Choose an agent's model and thinking	เลือกโมเดลและระดับการคิดของเอเจนต์
+Add another	เพิ่มอีก
+Add it again, to choose another account's folder for it.	เพิ่มอีกครั้งเพื่อเลือกโฟลเดอร์ของบัญชีอื่น
+Apply model options	นำตัวเลือกโมเดลไปใช้
+Attach pictures (or drop or paste them here)	แนบรูปภาพ (หรือลากมาวางหรือวางจากคลิปบอร์ดที่นี่)
+Claude Code folder (CLAUDE_CONFIG_DIR)	โฟลเดอร์ Claude Code (CLAUDE_CONFIG_DIR)
+Context window	หน้าต่างบริบท
+Default	ค่าเริ่มต้น
+Extended	ขยาย
+Its own sign-in, settings and conversations: another folder is another account. Empty: its usual folder.	การลงชื่อเข้าใช้ การตั้งค่า และบทสนทนาของตัวเอง: โฟลเดอร์อื่นคืออีกบัญชีหนึ่ง เว้นว่างไว้เพื่อใช้โฟลเดอร์ปกติ
+Work on my project	ทำงานกับโปรเจกต์ของฉัน
+Work on a project you already have	ทำงานกับโปรเจกต์ที่คุณมีอยู่แล้ว
+Pick its folder, say what you want, then press Start.	เลือกโฟลเดอร์ บอกสิ่งที่คุณต้องการ แล้วกดเริ่ม
+Where is your project?	โปรเจกต์ของคุณอยู่ที่ไหน
+Choose your project's folder…	เลือกโฟลเดอร์ของโปรเจกต์…
+For example: add a dark mode	ตัวอย่าง: เพิ่มโหมดมืด
+Pick your project's folder first.	เลือกโฟลเดอร์ของโปรเจกต์ก่อน
+Pick your project's folder	เลือกโฟลเดอร์ของโปรเจกต์
+That folder is empty. Pick the folder your project's files are in.	โฟลเดอร์นั้นว่างเปล่า เลือกโฟลเดอร์ที่มีไฟล์โปรเจกต์ของคุณ
+Load a picture	โหลดรูปภาพ
+Load model options	โหลดตัวเลือกโมเดล
+Model options	ตัวเลือกโมเดล
+Nothing found yet. We look for API keys, local model servers (Ollama, LM Studio) and agent apps you already have. One on another port or computer can be added by its address below.	ยังไม่พบสิ่งใด เราค้นหาคีย์ API เซิร์ฟเวอร์โมเดลภายในเครื่อง (Ollama, LM Studio) และแอปเอเจนต์ที่คุณมีอยู่แล้ว เซิร์ฟเวอร์บนพอร์ตหรือคอมพิวเตอร์อื่นเพิ่มได้ด้วยที่อยู่ด้านล่าง
+Paste pictures	วางรูปภาพ
+Pausing…	กำลังหยุดชั่วคราว…
+Reasoning	การใช้เหตุผล
+Set an AI's folder	ตั้งค่าโฟลเดอร์ของ AI
+Set model options	ตั้งค่าตัวเลือกโมเดล
+Show model options	แสดงตัวเลือกโมเดล
+Standard	มาตรฐาน
+The clipboard can't be read:	ไม่สามารถอ่านคลิปบอร์ดได้:
+The pasted picture wasn't attached: another screen was opened meanwhile.	ไม่ได้แนบรูปภาพที่วาง: มีการเปิดหน้าจออื่นในระหว่างนั้น
+The picture on the clipboard is too large.	รูปภาพในคลิปบอร์ดมีขนาดใหญ่เกินไป
+There's no picture on the clipboard to paste.	ไม่มีรูปภาพในคลิปบอร์ดให้วาง
+Update a finding	อัปเดตสิ่งที่พบ
+{name} can't be attached: a message takes pictures up to 20 MB.	แนบ {name} ไม่ได้: ข้อความหนึ่งแนบรูปภาพได้สูงสุด 20 MB
+{name} can't be attached: it isn't a PNG, JPEG, GIF or WebP picture.	แนบ {name} ไม่ได้: ไฟล์นี้ไม่ใช่รูปภาพ PNG, JPEG, GIF หรือ WebP
+Providers	ผู้ให้บริการ
+Harnesses	ระบบเอเจนต์
+Nothing of this kind was found.	ไม่พบสิ่งประเภทนี้
+Another model	โมเดลอื่น
+Fold a project's plan	พับแผนของโปรเจกต์
+Fold the plan	พับแผน
+The Claude desktop app is installed, but building needs Claude Code, its separate command-line tool. Install Claude Code, sign in to it once in a terminal, then look again.	ติดตั้งแอป Claude บนเดสก์ท็อปแล้ว แต่การสร้างต้องใช้ Claude Code ซึ่งเป็นเครื่องมือบรรทัดคำสั่งแยกต่างหาก ติดตั้ง Claude Code ลงชื่อเข้าใช้หนึ่งครั้งในเทอร์มินัล แล้วค้นหาอีกครั้ง
+Unreal is here, but its bundled Clang C++ toolchain wasn't found.	พบ Unreal แล้ว แต่ไม่พบชุดเครื่องมือ Clang C++ ที่มาพร้อมกัน
+Add Unreal's Linux C++ toolchain	เพิ่มชุดเครื่องมือ C++ สำหรับ Linux ของ Unreal
+Run Engine/Build/BatchFiles/Linux/SetupToolchain.sh in the engine folder to install its bundled Clang toolchain. If you built Unreal from source, Setup.sh downloads the native toolchain instead. A system Clang may not match the engine's version.	เรียกใช้ Engine/Build/BatchFiles/Linux/SetupToolchain.sh ในโฟลเดอร์เอนจินเพื่อติดตั้งชุดเครื่องมือ Clang ที่มาพร้อมกัน หากคุณสร้าง Unreal จากซอร์ส Setup.sh จะดาวน์โหลดชุดเครื่องมือสำหรับระบบแทน Clang ของระบบอาจไม่ตรงกับเวอร์ชันของเอนจิน
+Unreal is here, but it also needs Xcode.	พบ Unreal แล้ว แต่ยังต้องใช้ Xcode
+About 60 GB, an Epic Games account, and Xcode.	ประมาณ 60 GB, บัญชี Epic Games และ Xcode

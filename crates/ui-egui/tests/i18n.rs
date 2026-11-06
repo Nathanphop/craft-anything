@@ -122,7 +122,9 @@ fn localized_startup_language_menu_and_saved_selection() {
         assert_eq!(i18n::language(), expected);
         assert!(restored.state().engine.session().settings.language.is_empty());
     }
-    for (code, native, label) in [("fr", "Français", "Langue"), ("ja", "日本語", "言語"), ("th", "ไทย", "ภาษา")] {
+    for (code, native, label) in
+        [("de", "Deutsch", "Sprache"), ("fr", "Français", "Langue"), ("ja", "日本語", "言語"), ("ko", "한국어", "언어"), ("th", "ไทย", "ภาษา")]
+    {
         let settings = Settings { mode: Mode::Beginner, first_run_done: true, language: code.into(), ..Default::default() };
         let mut existing = harness(settings, &temp.path().join(code));
         existing.run_steps(3);

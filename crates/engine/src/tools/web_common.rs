@@ -79,6 +79,19 @@ pub fn engine_missing(detail: impl std::fmt::Display) -> ToolError {
     )
 }
 
+/// Where a launched browser's private profile goes. A Flatpak or Snap browser has a /tmp of its
+/// own, so it couldn't use a profile there and we couldn't read its port from it: its profile goes
+/// in the home folder its sandbox always shares (#747). Anything else uses the temp folder.
+fn profile_base(exe: &std::path::Path, home: Option<std::path::PathBuf>) -> std::path::PathBuf {
+    let parent = exe.parent().unwrap_or(std::path::Path::new(""));
+    let name = exe.file_name().filter(|n| !n.is_empty());
+    match (name, home) {
+        (Some(app), Some(home)) if parent.ends_with("flatpak/exports/bin") => home.join(".var/app").join(app).join("cache"),
+        (Some(app), Some(home)) if parent == std::path::Path::new("/snap/bin") => home.join("snap").join(app).join("common"),
+        _ => std::env::temp_dir(),
+    }
+}
+
 impl Browser {
     /// A handle to a browser someone else owns (it is not killed when this drops).
     pub fn attached(endpoint: &Endpoint, product: &str, version: &str) -> Browser {
@@ -123,7 +136,7 @@ impl Browser {
     pub(crate) fn launch(ctx: &Ctx<'_>, opts: &LaunchOptions, dl: &Deadline) -> Result<Browser, ToolError> {
         let exe = craft_anything_engines::locate("chromium", &ctx.session.settings.engines.tools, &ctx.session.settings.engine_store_dir())
             .ok_or_else(|| engine_missing("no Chromium-based browser was found"))?;
-        let profile = super::artifact_tools::fresh_temp_dir("craft-browser")?;
+        let profile = super::artifact_tools::fresh_dir_in(&profile_base(&exe, dirs::home_dir()), "craft-browser")?;
         let mut args: Vec<String> = vec![
             format!("--user-data-dir={}", profile.display()),
             "--remote-debugging-port=0".into(),
@@ -863,6 +876,47 @@ pub fn encode_png(img: &Image) -> Result<Vec<u8>, ToolError> {
     Ok(out)
 }
 
+/// `img` as an 8-bit RGBA PNG of at most `max` bytes, or `None` when it would be bigger. It's
+/// compressed a chunk at a time, so a picture that won't fit stops as soon as it passes `max`
+/// instead of being held whole first.
+pub fn encode_png_within(img: &Image, max: usize) -> Result<Option<Vec<u8>>, ToolError> {
+    /// Takes bytes until `max`, then refuses them and says so.
+    struct Capped {
+        out: Vec<u8>,
+        max: usize,
+        over: bool,
+    }
+    impl std::io::Write for Capped {
+        fn write(&mut self, buf: &[u8]) -> std::io::Result<usize> {
+            if self.out.len().saturating_add(buf.len()) > self.max {
+                self.over = true;
+                return Err(std::io::Error::other("the PNG passed its size limit"));
+            }
+            self.out.extend_from_slice(buf);
+            Ok(buf.len())
+        }
+        fn flush(&mut self) -> std::io::Result<()> {
+            Ok(())
+        }
+    }
+    let mut capped = Capped { out: Vec::new(), max, over: false };
+    let written = (|| {
+        let mut enc = png::Encoder::new(&mut capped, img.width, img.height);
+        enc.set_color(png::ColorType::Rgba);
+        enc.set_depth(png::BitDepth::Eight);
+        let mut w = enc.write_header().map_err(|e| format!("PNG header: {e}"))?;
+        let mut stream = w.stream_writer().map_err(|e| format!("PNG data: {e}"))?;
+        std::io::Write::write_all(&mut stream, &img.rgba).map_err(|e| format!("PNG data: {e}"))?;
+        stream.finish().map_err(|e| format!("PNG data: {e}"))?;
+        w.finish().map_err(|e| format!("PNG end: {e}"))
+    })();
+    match written {
+        _ if capped.over => Ok(None),
+        Ok(()) => Ok(Some(capped.out)),
+        Err(e) => Err(ToolError::internal(e)),
+    }
+}
+
 /// `img` scaled to `w`×`h` (box sampling: each output pixel is the mean of the input pixels it
 /// covers). Aspect ratio isn't kept: comparisons bring both pictures to one size.
 pub fn resize(img: &Image, w: u32, h: u32) -> Image {
@@ -997,6 +1051,45 @@ pub fn png_artifact(bytes: &[u8]) -> Result<Value, ToolError> {
 
 #[cfg(test)]
 mod tests {
+    /// #747: a Flatpak or Snap browser keeps its profile where its sandbox can reach it and we can
+    /// read its port; any other browser uses the temp folder.
+    #[test]
+    fn a_sandboxed_browser_gets_a_profile_it_can_reach() {
+        use std::path::{Path, PathBuf};
+        let home = || Some(PathBuf::from("/home/me"));
+        let base = |exe: &str| super::profile_base(Path::new(exe), home());
+        assert_eq!(base("/var/lib/flatpak/exports/bin/com.google.Chrome"), Path::new("/home/me/.var/app/com.google.Chrome/cache"));
+        assert_eq!(base("/home/me/.local/share/flatpak/exports/bin/com.brave.Browser"), Path::new("/home/me/.var/app/com.brave.Browser/cache"));
+        assert_eq!(base("/snap/bin/chromium"), Path::new("/home/me/snap/chromium/common"));
+        assert_eq!(base("/usr/bin/google-chrome"), std::env::temp_dir());
+        assert_eq!(super::profile_base(Path::new("/var/lib/flatpak/exports/bin/com.google.Chrome"), None), std::env::temp_dir(), "no home folder");
+    }
+
+    /// The capped encoder gives a PNG of the same pixels when it fits, and stops without one when
+    /// it doesn't: noise hardly compresses, so 64×64 of it can't fit in 4 KB.
+    #[test]
+    fn a_png_over_its_limit_is_refused_while_encoding() {
+        let small = Image { width: 3, height: 2, rgba: (0..24).collect() };
+        let png = encode_png_within(&small, 1 << 20).unwrap().unwrap();
+        let back = decode_png(&png).unwrap();
+        assert_eq!((back.width, back.height, back.rgba), (3, 2, small.rgba.clone()));
+        assert_eq!(encode_png_within(&small, png.len()).unwrap().as_deref(), Some(png.as_slice()), "exactly the limit fits");
+        assert_eq!(encode_png_within(&small, png.len() - 1).unwrap(), None);
+        let mut seed = 0x2545_f491_u32;
+        let noise: Vec<u8> = (0..64 * 64 * 4)
+            .map(|_| {
+                seed ^= seed << 13;
+                seed ^= seed >> 17;
+                seed ^= seed << 5;
+                seed as u8
+            })
+            .collect();
+        let noisy = Image { width: 64, height: 64, rgba: noise };
+        assert_eq!(encode_png_within(&noisy, 4096).unwrap(), None);
+        let fits = encode_png_within(&noisy, 1 << 20).unwrap().unwrap();
+        assert_eq!(png_dimensions(&fits).unwrap(), (64, 64));
+    }
+
     use super::*;
 
     #[test]

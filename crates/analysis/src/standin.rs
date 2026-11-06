@@ -501,6 +501,18 @@ impl Scrub {
         (names, kept.join("&"))
     }
 
+    /// Apply current rules to a request or a saved query. Raw requests ignore empty segments,
+    /// but canonical saved queries use empty slots for explicit empty key/value pairs (`=`).
+    fn query_text(&mut self, query: &str, preserve_empty_pairs: bool) -> String {
+        let pairs: Vec<(String, String)> = query
+            .split('&')
+            .filter(|p| preserve_empty_pairs || !p.is_empty())
+            .take(200)
+            .map(|p| p.split_once('=').map_or((p.to_string(), String::new()), |(k, v)| (k.to_string(), v.to_string())))
+            .collect();
+        self.query(&pairs, false).1
+    }
+
     fn note_header(&mut self, name: &str) {
         self.dropped.headers = self.dropped.headers.saturating_add(1);
         let l = name.to_ascii_lowercase();
@@ -1035,6 +1047,8 @@ pub enum NoMatchReason {
     MethodNotRecorded,
     /// The URL was recorded, but not this GraphQL operation.
     OperationNotRecorded,
+    /// The matching responses need a cached body that is unavailable in the recording.
+    CachedBodyUnavailable,
 }
 
 /// A route close to what was asked for.
@@ -1113,13 +1127,7 @@ pub fn answer(standin: &StandIn, turns: &mut Turns, method: &str, path: &str, qu
     // A request is brought to the same form as the recording, so a dropped value still compares equal.
     let mut scrub = Scrub::new(&[]);
     let clean_path = scrub.path(path.split(['?', '#']).next().unwrap_or_default(), false);
-    let pairs: Vec<(String, String)> = query
-        .split('&')
-        .take(200)
-        .filter(|p| !p.is_empty())
-        .map(|p| p.split_once('=').map_or((p.to_string(), String::new()), |(k, v)| (k.to_string(), v.to_string())))
-        .collect();
-    let (_, clean_query) = scrub.query(&pairs, false);
+    let clean_query = scrub.query_text(query, false);
     let key = request_key(body);
     let key = key.as_deref();
 
@@ -1139,7 +1147,13 @@ pub fn answer(standin: &StandIn, turns: &mut Turns, method: &str, path: &str, qu
     let same_method = || standin.routes.iter().enumerate().filter(|(_, r)| r.method == look_for);
     let mut picked: Option<(usize, MatchKind, Vec<usize>)> = None;
     for (ri, route) in same_method() {
-        let exact: Vec<usize> = route.samples.iter().enumerate().filter(|(_, s)| s.path == clean_path && s.query == clean_query).map(|(i, _)| i).collect();
+        let exact: Vec<usize> = route
+            .samples
+            .iter()
+            .enumerate()
+            .filter(|(_, s)| s.path == clean_path && (s.query == clean_query || scrub.query_text(&s.query, true) == clean_query))
+            .map(|(i, _)| i)
+            .collect();
         if let Some(fit) = consider(route, exact) {
             picked = Some((ri, MatchKind::PathAndQuery, fit));
             break;
@@ -1165,7 +1179,7 @@ pub fn answer(standin: &StandIn, turns: &mut Turns, method: &str, path: &str, qu
         }
     }
 
-    let Some((ri, how, fit)) = picked else {
+    let Some((ri, how, mut fit)) = picked else {
         let path_known = standin.routes.iter().any(|r| template_fits(&r.template, &clean_path) || r.samples.iter().any(|s| s.path == clean_path));
         let reason = if operation_missing {
             NoMatchReason::OperationNotRecorded
@@ -1179,6 +1193,13 @@ pub fn answer(standin: &StandIn, turns: &mut Turns, method: &str, path: &str, qu
     let Some(route) = standin.routes.get(ri) else {
         return Answer::NoMatch(NoMatch { reason: NoMatchReason::PathNotRecorded, nearest: Vec::new() });
     };
+    // Usable cached 304 bodies become 200 at build time. Keep unavailable samples in the file
+    // as evidence, but a fresh client cannot use them. Filter only after choosing the best match:
+    // another query, resource or GraphQL operation is not a substitute for its missing body.
+    fit.retain(|i| route.samples.get(*i).is_some_and(|s| s.status != 304));
+    if fit.is_empty() {
+        return Answer::NoMatch(NoMatch { reason: NoMatchReason::CachedBodyUnavailable, nearest: nearest(standin, look_for, &clean_path) });
+    }
     let first = fit.first().copied().unwrap_or(0);
     let counter = turns.0.entry((ri, first, how)).or_insert(0);
     let at = counter.checked_rem(fit.len()).unwrap_or(0);
