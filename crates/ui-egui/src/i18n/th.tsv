@@ -1426,3 +1426,22 @@ Add Unreal's Linux C++ toolchain	เพิ่มชุดเครื่อง�
 Run Engine/Build/BatchFiles/Linux/SetupToolchain.sh in the engine folder to install its bundled Clang toolchain. If you built Unreal from source, Setup.sh downloads the native toolchain instead. A system Clang may not match the engine's version.	เรียกใช้ Engine/Build/BatchFiles/Linux/SetupToolchain.sh ในโฟลเดอร์เอนจินเพื่อติดตั้งชุดเครื่องมือ Clang ที่มาพร้อมกัน หากคุณสร้าง Unreal จากซอร์ส Setup.sh จะดาวน์โหลดชุดเครื่องมือสำหรับระบบแทน Clang ของระบบอาจไม่ตรงกับเวอร์ชันของเอนจิน
 Unreal is here, but it also needs Xcode.	พบ Unreal แล้ว แต่ยังต้องใช้ Xcode
 About 60 GB, an Epic Games account, and Xcode.	ประมาณ 60 GB, บัญชี Epic Games และ Xcode
+File	ไฟล์
+View	มุมมอง
+Window	หน้าต่าง
+Help	วิธีใช้
+Command palette	พาเลตคำสั่ง
+Craft Anything on GitHub	Craft Anything บน GitHub
+Report a problem…	รายงานปัญหา…
+Quit Craft Anything	ออกจาก Craft Anything
+About Craft Anything	เกี่ยวกับ Craft Anything
+Services	บริการ
+Hide Craft Anything	ซ่อน Craft Anything
+Hide others	ซ่อนหน้าต่างอื่น
+Show all	แสดงทั้งหมด
+Close window	ปิดหน้าต่าง
+Full screen	เต็มหน้าจอ
+Zoom	ซูม
+Bring all to front	นำหน้าต่างทั้งหมดมาไว้ด้านหน้า
+Drag to give the plan more or less room; double-click to reset	ลากเพื่อปรับพื้นที่ของแผน ดับเบิลคลิกเพื่อรีเซ็ต
+Copy the message	คัดลอกข้อความ

@@ -317,9 +317,12 @@ been run live.
 
 ### R5.5 API-key builds fail in words people can use
 Owner: open · Status: todo
-- [ ] `rebuild --backend <an API backend>` still adds the first agent app it finds to the person's
+- [x] `rebuild --backend <an API backend>` still adds the first agent app it finds to the person's
       settings and prints "Using Claude Code (…)": `ensure_agent` (`rebuild_cmd.rs`) runs whenever no
       agent app is set up, though this run won't use one. Run it only when the build needs one
+      — claimed: AlexJoaquimPereira, branch `bugfix/r5.5-no-agent-with-api-backend`
+- [ ] `--backend <a name that is turned off>` still builds with it: `builder_backend`'s named
+      branch doesn't check `enabled`, while Settings treats an AI that is off as unusable
 - [x] Bound accumulated data across all lines of one server-sent event, so short lines cannot
       grow a streamed API response without limit
       — claimed: Afloat16, branch bugfix/r5.5-bounded-sse-events-20261103
@@ -394,7 +397,8 @@ yet, and the quick start is how every new person begins.
 **A real program, device or file:**
 - [ ] Cutter sessions: try them against a real Cutter, including whether `=h&` keeps Cutter
       responsive (only a stand-in server so far)
-- [ ] Vineflower: run it once on a real JAR (no Java on the machine it was written on)
+- [x] Vineflower: run it once on a real JAR (no Java on the machine it was written on)
+      — claimed: hasnain607, branch docs/r5.7-vineflower-live-run
 - [ ] Verify the 23 unverified adb tools; record results in tool-status.md
 - [ ] Android locales: try `only_locales` on a real APK (only the test fixture so far)
 - [ ] `app_graphs_compare` on the two real Electron releases again, to count how many of the
@@ -442,9 +446,11 @@ Owner: open · Status: in progress
 - [x] A relative program path started in another folder is looked up where it was started
       before it's reported as missing (Unix: a script whose interpreter is missing was said to
       have no file there)
-- [ ] When a saved Codex desktop path is gone, offer the CLI found in its newest build folder
-      (asking first, never replacing a custom program silently), and let Detect/Test check the
-      configured program itself (#721)
+- [x] `ai test` names the program it ran and the saved one it replaced, and `doctor` says a saved
+      path has no program there instead of blaming PATH (#721)
+- [ ] Settings says when a saved agent program is gone and which one runs in its place; today a
+      build moves to the newest build folder or the usual program without saying so, and the
+      setting keeps the old path (read on a worker, not while drawing) (#721)
 - [x] GitHub Copilot through its own CLI login and ACP, without credential import:
       discovery, MCP-only tool restrictions, model selection and fresh read-only questions;
       unit tests and CLI 1.0.105 with an isolated home and loopback model, all five access modes
@@ -507,9 +513,10 @@ Owner: open · Status: in progress
 - [x] Aider has no adapter, so the plain one hands it the prompt as a file name, and it can open a
       browser sign-in nobody agreed to (#72). Give it an adapter, or stop offering it — claimed: Afloat16, branch bugfix/r2.2-aider-recommendations-20261103
 - [ ] Add a non-interactive Aider adapter before recommending it again; detection currently leaves it out.
-- [ ] Codex (#499): in a chat the tool server has no active target, tools turned on with
-      `enable_toolset` can't be called, The
-      reporter attached a patch for chat continuity; look at that first
+- [ ] Codex (#499): in a chat the tool server has no active target. The reporter attached a patch
+      for chat continuity; look at that first
+- [x] Codex (#538): list every permitted tool from startup, since Codex doesn't refresh its callable
+      list after `enable_toolset` changes it — PR #805
 - [x] Codex (#540): `rebuild_start` was refused by `codex exec`'s approval policy and showed as
       `null`; setup and the builder now approve our tools for Codex (we still ask before running
       code) and a refusal explains the fix (`docs/codex.md`)
@@ -700,6 +707,9 @@ Gaps found while using the app for real projects.
       ended 30 s later. Not run on a Mac
 - [ ] Find why a site capture lost its browser ("the WebSocket is closed", 419 ms into
       `web_site_capture` for a second page, seen once; the same capture passed 41 s earlier)
+- [x] Delete a private browser's temporary profile when it closes or fails to start (#810) — PR #822
+- [ ] Stop private browsers that outlive the app after an abrupt exit, and investigate the Brave
+      Helper crash (#810); both still need macOS reproduction
 - [ ] Claude Code's Ultracode switch (a setting, not an effort level; the effort environment
       variable we use can't turn it on)
 - [x] A model the list doesn't offer (`opusplan`, `[1m]` variants, one another harness serves) can
@@ -740,6 +750,12 @@ Gaps found while using the app for real projects.
 - [ ] Keep the builder-availability smoke regression independent of live agent discovery.
       — claimed: Afloat16, branch test/r2.9-builder-discovery-fixture-20261104
       Test fixture implemented with controlled discovery; automated validation remains pending.
+- [x] macOS: a menu bar with the app's own actions (open a file or folder, new project, settings,
+      Simple / Advanced, Clean room / Deep, the command palette, help); the system's menu bar
+      showed only the app menu
+      — claimed: sanketdofe, branch feature/r2.9-macos-menu-bar
+- [ ] macOS: an Edit menu (Undo, Cut, Copy, Paste, Select All). The keys work in text boxes, but
+      the system's Edit items need the text box to answer them, so they'd show greyed out today
 
 ### R2.10 Pinned builds
 Owner: maintainers · Status: in progress
@@ -795,6 +811,11 @@ Owner: open · Status: in progress
       it's there
 - [ ] `native_publisher_show` hashes the file minus the signature fields, not section by section;
       a file with unusual gaps between sections can read as different
+- [x] Enforce stand-in per-body and total byte budgets on the text that is actually retained after redaction;
+      deduplicate consecutive samples before charging the capture budget.
+      — claimed: Afloat16, branch bugfix/r3.11-standin-redacted-budget-20261103b
+      Revision `d601bc4e` passed [full Linux CI](https://github.com/storytold/craft-anything/actions/runs/41788735130):
+      all four retained-budget regressions and six deduplication regressions passed.
 
 ### R3.12 Format parser correctness
 Owner: open · Status: in progress
